@@ -1,0 +1,17 @@
+{
+  "name": "NEON DODGE PRO",
+  "short_name": "Neon Game",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation":"portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon(3).png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
