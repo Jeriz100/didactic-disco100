@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.json"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icon(3).png">
+    <link rel="apple-touch-icon" href="icon(3).png">
+<title>Neon Dodge Pro</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:black; /* 🔥 BLACK BACKGROUND */
+    overflow:hidden;
+    color:white;
+}
+
+/* GLOW EFFECT */
+.glow{
+    position:absolute;
+    width:260px;
+    height:260px;
+    background:#00f7ff;
+    filter:blur(140px);
+    opacity:0.12;
+    border-radius:50%;
+    top:20%;
+    left:30%;
+}
+
+/* MENU */
+.menu{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    text-align:center;
+}
+
+h1{
+    font-size:42px;
+    color:#00f7ff;
+    text-shadow:0 0 20px #00f7ff;
+}
+
+p{
+    opacity:0.7;
+}
+
+button{
+    padding:12px 30px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+/* PLAY BUTTON */
+.play{
+    background:linear-gradient(90deg,#00f7ff,#00ff99);
+    font-weight:bold;
+    color:black;
+}
+
+/* EXIT BUTTON */
+#exitGame{
+    position:fixed;
+    top:15px;
+    left:15px;
+    padding:8px 14px;
+    font-size:14px;
+    border:none;
+    border-radius:8px;
+    background:#ff4444;
+    color:white;
+    z-index:9999;
+    cursor:pointer;
+}
+
+/* SETTINGS BUTTON (FIXED VISIBILITY) */
+#settingsBtn{
+    position:fixed;
+    top:15px;
+    right:18px;
+    width:30px;
+    height:50px;
+    border-radius:12px;
+    border:none;
+    background:#1a1a1a;
+    color:#00f7ff;
+    font-size:22px;
+    z-index:9999;
+    cursor:pointer;
+    box-shadow:0 0 15px rgba(0,247,255,0.4);
+}
+
+/* SETTINGS PANEL */
+#settingsPanel{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9998;
+}
+
+#settingsBox{
+    background:#111;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    width:230px;
+    border:1px solid #00f7ff;
+}
+
+.toggle{
+    margin-top:15px;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.on{
+    background:#00ff99;
+    color:black;
+}
+
+.off{
+    background:#ff4444;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+  
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("SW.js")
+    .then(() => console.log("SW registered"))
+    .catch(err => console.log("SW failed", err));
+}
+</script>
+<!-- BACKGROUND GLOW -->
+<div class="glow"></div>
+
+<!-- EXIT -->
+<button id="exitGame">EXIT</button>
+
+<!-- SETTINGS -->
+<button id="settingsBtn">⚙</button>
+
+<div class="menu">
+
+    <h1>NEON DODGE PRO</h1>
+    <p>Survive the neon chaos</p>
+
+    <button class="play" onclick="startGame()">PLAY</button>
+
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="settingsPanel">
+    <div id="settingsBox">
+
+        <h3>Settings</h3>
+        <p>Sound Effects</p>
+
+        <button id="soundBtn" class="toggle on">ON</button>
+
+        <br><br>
+        <button onclick="closeSettings()" class="toggle off">Close</button>
+
+    </div>
+</div>
+
+<script>
+
+/* START GAME */
+function startGame(){
+    window.location.href = "home.html";
+}
+
+/* EXIT */
+document.getElementById("exitGame").onclick = ()=>{
+    window.close();
+    window.location.href = "about:blank";
+};
+
+/* SETTINGS OPEN */
+document.getElementById("settingsBtn").onclick = ()=>{
+    document.getElementById("settingsPanel").style.display = "flex";
+    updateSoundUI();
+};
+
+/* CLOSE SETTINGS */
+function closeSettings(){
+    document.getElementById("settingsPanel").style.display = "none";
+}
+
+/* SOUND SYSTEM */
+let soundOn = localStorage.getItem("soundOn");
+
+if(soundOn === null){
+    soundOn = "true";
+    localStorage.setItem("soundOn", "true");
+}
+
+soundOn = (soundOn === "true");
+
+/* TOGGLE SOUND */
+document.getElementById("soundBtn").onclick = ()=>{
+    soundOn = !soundOn;
+    localStorage.setItem("soundOn", soundOn);
+    updateSoundUI();
+};
+
+/* UPDATE UI */
+function updateSoundUI(){
+    let btn = document.getElementById("soundBtn");
+
+    if(soundOn){
+        btn.innerText = "ON";
+        btn.className = "toggle on";
+    }else{
+        btn.innerText = "OFF";
+        btn.className = "toggle off";
+    }
+}
+
+updateSoundUI();
+
+</script>
+
+</body>
+</html>

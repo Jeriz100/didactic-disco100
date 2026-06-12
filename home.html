@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neon Dodge Pro</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:black;
+    font-family:Arial;
+}
+
+canvas{ display:block; }
+
+/* UI */
+#ui{
+    position:fixed;
+    top:10px;
+    left:10px;
+    color:white;
+    z-index:10;
+}
+
+#mission{
+    position:fixed;
+    top:10px;
+    right:10px;
+    color:#00f7ff;
+    z-index:10;
+}
+
+/* CONTROLS */
+#controls{
+    position:fixed;
+    bottom:20px;
+    width:80%;
+    display:flex;
+    justify-content:space-between;
+    padding:0 40px;
+}
+
+button{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    border:none;
+    background:rgba(255,255,255,0.15);
+    color:white;
+    font-size:22px;
+}
+
+/* GAME OVER */
+#gameOver{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.9);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:white;
+    z-index:20;
+}
+
+.btn{
+    margin:10px;
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+.playAgain{
+  background:#00ff99;
+  width:100px;
+}
+.exit{ 
+  background:#ff4444; 
+  color:white;
+  width:100px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+Score: <span id="score">0</span><br>
+Level: <span id="level">1</span>
+</div>
+
+<div id="mission">
+Mission: Survive
+</div>
+
+<canvas id="game"></canvas>
+
+<div id="controls">
+<button id="left">⬅</button>
+<button id="right">➡</button>
+</div>
+
+<div id="gameOver">
+    <h1>GAME OVER</h1>
+    <p>Score: <span id="finalScore"></span></p>
+
+    <button class="btn playAgain" onclick="restart()">Play Again</button>
+    <button class="btn exit" onclick="exitGame()">Exit</button>
+</div>
+
+<script>
+
+/* =========================
+   SOUND SYSTEM (CONNECTED)
+========================= */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+let soundOn = localStorage.getItem("soundOn");
+soundOn = (soundOn === "true");
+
+function beep(freq, time, type="sine", vol=0.1){
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.value = vol;
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + time);
+}
+
+/* SOUND FX */
+function playMove(){
+    if(!soundOn) return;
+    beep(120, 0.03, "square", 0.03);
+}
+
+function playHit(){
+    if(!soundOn) return;
+    beep(80, 0.2, "sawtooth", 0.2);
+    setTimeout(()=> beep(40, 0.2, "square", 0.1), 80);
+}
+
+function playLevel(){
+    if(!soundOn) return;
+    beep(600, 0.08);
+    setTimeout(()=> beep(800, 0.08), 80);
+    setTimeout(()=> beep(1000, 0.1), 160);
+}
+
+/* =========================
+   GAME SETUP
+========================= */
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let player, score, level, running, difficulty, spawnRate, obstacles;
+
+function reset(){
+    player = {
+        x: canvas.width/2,
+        y: canvas.height - 120,
+        w: 40,
+        h: 40,
+        speed: 7
+    };
+
+    score = 0;
+    level = 1;
+    running = true;
+
+    difficulty = 1;
+    spawnRate = 650;
+    obstacles = [];
+}
+
+reset();
+
+/* INPUT */
+let left = false;
+let right = false;
+
+/* SPAWN */
+function spawn(){
+    obstacles.push({
+        x: Math.random() * (canvas.width - 40),
+        y: -50,
+        w: 40,
+        h: 40,
+        color: "hsl(" + Math.random()*360 + ",100%,60%)"
+    });
+}
+
+setInterval(()=>{
+    if(running) spawn();
+}, spawnRate);
+
+/* DRAW */
+function drawPlayer(){
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "#00f7ff";
+    ctx.fillStyle = "#00f7ff";
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+    ctx.shadowBlur = 0;
+}
+
+function drawObstacles(){
+    obstacles.forEach(o=>{
+        ctx.fillStyle = o.color;
+        ctx.fillRect(o.x, o.y, o.w, o.h);
+    });
+}
+
+/* GAME OVER */
+function gameOver(){
+    running = false;
+    playHit();
+
+    document.getElementById("finalScore").innerText = score;
+    document.getElementById("gameOver").style.display = "flex";
+}
+
+/* UPDATE */
+function update(){
+
+    if(!running) return;
+
+    if(left){
+        player.x -= player.speed;
+        playMove();
+    }
+
+    if(right){
+        player.x += player.speed;
+        playMove();
+    }
+
+    if(player.x < 0) player.x = 0;
+    if(player.x + player.w > canvas.width)
+        player.x = canvas.width - player.w;
+
+    obstacles.forEach(o=>{
+        o.y += 4 + difficulty * 0.4;
+
+        if(
+            player.x < o.x + o.w &&
+            player.x + player.w > o.x &&
+            player.y < o.y + o.h &&
+            player.y + player.h > o.y
+        ){
+            gameOver();
+        }
+    });
+
+    obstacles = obstacles.filter(o => o.y < canvas.height);
+
+    score++;
+
+    /* SECRET LEVEL SYSTEM */
+    if(score % 150 === 0){
+        level++;
+        difficulty += 0.5;
+        spawnRate = Math.max(250, spawnRate - 30);
+
+        playLevel();
+        document.getElementById("level").innerText = level;
+    }
+
+    document.getElementById("score").innerText = score;
+}
+
+/* LOOP */
+function loop(){
+
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    drawPlayer();
+    drawObstacles();
+    update();
+
+    requestAnimationFrame(loop);
+}
+
+loop();
+
+/* CONTROLS */
+document.getElementById("left").ontouchstart = ()=> left = true;
+document.getElementById("left").ontouchend = ()=> left = false;
+
+document.getElementById("right").ontouchstart = ()=> right = true;
+document.getElementById("right").ontouchend = ()=> right = false;
+
+document.getElementById("left").onmousedown = ()=> left = true;
+document.getElementById("left").onmouseup = ()=> left = false;
+
+document.getElementById("right").onmousedown = ()=> right = true;
+document.getElementById("right").onmouseup = ()=> right = false;
+
+/* BUTTONS */
+function restart(){
+    document.getElementById("gameOver").style.display = "none";
+    reset();
+}
+
+function exitGame(){
+    window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
