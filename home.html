@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.json">
 <title>Neon Dodge Pro</title>
 
 <style>
@@ -89,7 +90,21 @@ button{
 </head>
 
 <body>
+    
+<script>
 
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => {
+          console.log('Service Worker registered successfully:', reg.scope);
+        })
+        .catch((err) => {
+          console.log('Service Worker registration failed:', err);
+        });
+    });
+  }
+      </script>
 <div id="ui">
 Score: <span id="score">0</span><br>
 Level: <span id="level">1</span>
