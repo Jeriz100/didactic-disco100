@@ -12,7 +12,15 @@ body{
     overflow:hidden;
     background:black;
     font-family:Arial;
-}
+  /* Disables the text selection highlight and popup menu */
+  -webkit-user-select: none; /* Safari/Chrome/iOS/Android */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* Internet Explorer/Edge */
+  user-select: none;         /* Standard syntax */
+
+  /* Disables the blue/gray flash when tapping buttons on mobile */
+  -webkit-tap-highlight-color: transparent;
+    }
 
 canvas{ display:block; }
 
