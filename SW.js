@@ -11,20 +11,21 @@ const ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Caching static assets');
-      return cache.addAll(ASSETS);
+      console.log('Caching shell assets');
+      return cache.addAll(ASSETS_TO_CACHE);
     })
   );
 });
 
 // 2. Activate Event: Clean up old caches if you update the version
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('Clearing old cache');
+            console.log('Clearing old cache:', key);
             return caches.delete(key);
           }
         })
@@ -47,8 +48,3 @@ self.addEventListener('install', (e) => {
   console.log('[Service Worker] Install');
 });
 
-self.addEventListener('fetch', (e) => {
-  e.respondWith(caches.match(e.request).then((response) => {
-    return response || fetch(e.request);
-  }));
-});
