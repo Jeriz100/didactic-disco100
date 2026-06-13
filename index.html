@@ -203,7 +203,8 @@ function startGame(){
 
 /* EXIT */
 document.getElementById("exitGame").onclick = ()=>{
-    window.history.back();
+   if(window.history.length >1)
+  window.history.back();
 };
 
 /* SETTINGS OPEN */
