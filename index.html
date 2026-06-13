@@ -203,10 +203,10 @@ function startGame(){
 
 /* EXIT */
 document.getElementById("exitGame").onclick = ()=>{
-   if(window.history.length >1)
+   if(window.history.length >1){
   window.history.back();
+}
 };
-
 /* SETTINGS OPEN */
 document.getElementById("settingsBtn").onclick = ()=>{
     document.getElementById("settingsPanel").style.display = "flex";
