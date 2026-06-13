@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-quiz-v1';
+const CACHE_NAME = 'neon-game-v2';
 const ASSETS = [
   './',
   './index.html', 
