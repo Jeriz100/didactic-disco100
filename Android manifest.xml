@@ -1,16 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
-<widget id="com.jeriz100.didacticdisco" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Neon Game</name>
-    <description>
-        My awesome mobile game.
-    </description>
-    <author email="evangelineakpabio@gmail.com">
-        Jeriz100
-    </author>
-    <content src="index.html" />
 <application>
 <meta-data
     android:name="com.google.android.gms.ads.APPLICATION_ID"
     android:value="ca-app-pub-4316924759884428~1488912888"/>
 </application>
-</widget>
