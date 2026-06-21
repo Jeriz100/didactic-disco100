@@ -347,8 +347,22 @@ function exitGame(){
 <div style="position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: center; background-color: rgba(0,0,0,0.8); padding: 5px 0; z-index: 9999;">
 </div>
     <script>
-    admob.start();
-admob.banner.show();
+    document.addEventListener("deviceready", function () {
+
+    if (typeof admob !== "undefined") {
+
+        admob.start();
+
+        admob.banner.show({
+            id: "ca-app-pub-4316924759884428/5009650642"
+        });
+
+    } else {
+        console.log("AdMob not loaded");
+    }
+
+}, false);
+        
     </script>
 </body>
 </html>
