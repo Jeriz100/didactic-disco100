@@ -5,7 +5,7 @@ const ASSETS_TO_CACHE = [
   './index.html',
   './home.html',
   './manifest.json',
-  './sw.js'
+  './SW.js'
 ];
 
 // INSTALL: cache files
