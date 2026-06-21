@@ -15,4 +15,5 @@
             <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-4316924759884428~1488912888"/>
         </config-file>
     </platform>
+    <plugin name="cordova-plugin-admob" />
 </widget>
