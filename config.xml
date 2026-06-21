@@ -1,19 +1,36 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.jeriz100.neondodgepro" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget id="com.jeriz100.neondodgepro" version="1.0.0"
+xmlns="http://www.w3.org/ns/widgets"
+xmlns:cdv="http://cordova.apache.org/ns/1.0"
+xmlns:android="http://schemas.android.com/apk/res/android">
+
     <name>Neon Game</name>
+
     <description>
         My awesome mobile game.
     </description>
+
     <author email="evangelineakpablo@gmail.com">
         Jeriz100
     </author>
-    
+
     <content src="index.html" />
 
+    <!-- Permissions -->
     <platform name="android">
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        </config-file>
+
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-4316924759884428~1488912888"/>
+            <meta-data
+                android:name="com.google.android.gms.ads.APPLICATION_ID"
+                android:value="ca-app-pub-4316924759884428~1488912888"/>
         </config-file>
     </platform>
-    <plugin name="cordova-admob" spec="latest" />
+
+    <!-- AdMob Plugin (IMPORTANT) -->
+    <plugin name="admob-plus-cordova" />
+
 </widget>
